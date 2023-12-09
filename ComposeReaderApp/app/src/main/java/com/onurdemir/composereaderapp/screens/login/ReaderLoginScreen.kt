@@ -8,13 +8,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -82,7 +86,9 @@ fun UserForm(
         .verticalScroll(rememberScrollState())
     
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        EmailInput(emailState = email, enabled = !loading, onAction = KeyboardActions {
+        EmailInput(emailState = email,
+            enabled = !loading,
+            onAction = KeyboardActions {
             passwordFocusRequest.requestFocus()
         })
         PasswordInput(
@@ -96,6 +102,35 @@ fun UserForm(
                 onDone(email.value.trim(), password.value.trim())
             }
         )
+        SubmitButton(
+            textId = if (isCreateAccount) { "Create Account" }else { "Login" },
+            loading = loading,
+            validInputs = valid) {
+            onDone(email.value.trim(), password.value.trim())
+        }
+    }
+
+}
+
+@Composable
+fun SubmitButton(textId: String,
+                 loading: Boolean,
+                 validInputs: Boolean,
+onClick: () -> Unit) {
+
+    Button(onClick = onClick,
+    modifier = Modifier
+        .padding(3.dp)
+        .fillMaxWidth(),
+    enabled = !loading && validInputs,
+    shape = CircleShape) {
+
+        if (loading) {
+            CircularProgressIndicator(modifier = Modifier.size(25.dp))
+        }else {
+            Text(text = textId, modifier = Modifier.padding(5.dp))
+        }
+
     }
 
 }
