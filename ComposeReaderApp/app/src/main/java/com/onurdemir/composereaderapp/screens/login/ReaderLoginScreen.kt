@@ -54,9 +54,11 @@ import com.onurdemir.composereaderapp.R
 import com.onurdemir.composereaderapp.components.EmailInput
 import com.onurdemir.composereaderapp.components.PasswordInput
 import com.onurdemir.composereaderapp.components.ReaderLogo
+import com.onurdemir.composereaderapp.navigation.ReaderScreens
 
 @Composable
-fun ReaderLoginScreen(navController: NavController) {
+fun ReaderLoginScreen(navController: NavController,
+viewModel: LoginScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
 
     val showLoginForm = rememberSaveable { mutableStateOf(true) }
 
@@ -68,11 +70,17 @@ fun ReaderLoginScreen(navController: NavController) {
             ReaderLogo()
             if (showLoginForm.value) {
                 UserForm(loading = false, isCreateAccount = false) {email, password ->
-                    //Todo: FB login
+
+                    viewModel.signInWithEmailAndPassword(email, password) {
+                        navController.navigate(ReaderScreens.ReaderHomeScreen.name)
+                    }
+
                     }
             }else {
                 UserForm(loading = false, isCreateAccount = true) {email, password ->
-                    //Todo: create FB account
+                    viewModel.createUserWithEmailAndPassword(email, password) {
+                        navController.navigate(ReaderScreens.ReaderHomeScreen.name)
+                    }
                 }
             }
 
