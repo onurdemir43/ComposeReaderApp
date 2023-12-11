@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.onurdemir.composereaderapp.model.MUser
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -59,10 +60,17 @@ class LoginScreenViewModel: ViewModel() {
 
     }
     private fun createUser(displayName: String?) {
+
         val userId = auth.currentUser?.uid
-        val user = mutableMapOf<String, Any>()
-        user["user_id"] = userId.toString()
-        user["display_name"] = displayName.toString()
+
+        val user = MUser(id = null ,
+            userId = userId.toString(),
+            displayName = displayName.toString(),
+            avatarUrl = "",
+            quote = "Hello Android",
+            profession = "Android Developer")
+            .toMap()
+
 
         FirebaseFirestore.getInstance().collection("users")
             .add(user)
