@@ -1,6 +1,7 @@
 package com.onurdemir.composereaderapp.screens.home
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,8 +9,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -18,8 +21,13 @@ import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LibraryBooks
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -48,74 +56,51 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.google.firebase.auth.FirebaseAuth
+import com.onurdemir.composereaderapp.components.FABContent
+import com.onurdemir.composereaderapp.components.ReaderAppBar
+import com.onurdemir.composereaderapp.components.TitleSection
 import com.onurdemir.composereaderapp.model.MBook
 import com.onurdemir.composereaderapp.navigation.ReaderScreens
 
-@Preview
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home(navController: NavController = NavController(LocalContext.current)) {
-    Scaffold(topBar = {
-                      ReaderAppBar(title = "Reader App", navController = navController)
-    },
-        floatingActionButton = {
-            
-            FABContent{}
+fun Home(navController: NavController) {
 
-    }) {
-        //content
-        Surface(modifier = Modifier.fillMaxSize()) {
-            //home content
-            HomeContent(navController)
-        }
-    }
 
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ReaderAppBar(
-    title: String,
-    showProfile: Boolean = true,
-    navController: NavController
-) {
-
-    TopAppBar(title = {
-                      Row(verticalAlignment = Alignment.CenterVertically) {
-                          if (showProfile) {
-                              Icon(
-                                  imageVector = Icons.Default.LibraryBooks,
-                                  contentDescription = "Logo Icon",
-                                  tint = Color(0xFF92CBDF).copy(alpha = 0.6f),
-                                  modifier = Modifier
-                                      .clip(RoundedCornerShape(12.dp))
-                                      .scale(0.9f)
-
-                              )
-                          }
-                          Text(text = title, color = Color.Red.copy(alpha = 0.6f),
-                          style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                          )
-                      }
-    },
-        actions = {
-                  IconButton(onClick = {
-                      FirebaseAuth.getInstance().signOut().run {
-                          navController.navigate(ReaderScreens.LoginScreen.name)
-                      }
-                  }) {
-                      Icon(imageVector = Icons.Default.Logout,
-                          contentDescription = "Logout",
-                          tint = Color(0xFF92CBDF).copy(alpha = 0.6f))
-
-                  }
+        Scaffold(topBar = {
+            ReaderAppBar(title = "Reader App", navController = navController)
         },
-        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.LightGray.copy(alpha = 0.1f)))
+            floatingActionButton = {
+
+                FABContent{}
+
+            },
+        content = {
+            //content
+            Column(modifier = Modifier.fillMaxSize()) {
+                //home content
+                HomeContent(navController)
+                ListCard()
+
+            }
+        })
+
+
+
+
+
+
+
+
 
 
 }
+
+
 @Composable
 fun HomeContent(navController: NavController) {
 
@@ -125,7 +110,7 @@ fun HomeContent(navController: NavController) {
         "N/A"
     }
 
-    Column(modifier = Modifier.padding(2.dp), verticalArrangement = Arrangement.SpaceEvenly) {
+    Column(modifier = Modifier.padding(top = 65.dp, bottom = 5.dp, start = 5.dp, end = 5.dp), verticalArrangement = Arrangement.Top) {
         Row(modifier = Modifier.align(alignment = Alignment.Start)) {
             TitleSection(label = "Your reading \n" + "activity right now...")
 
@@ -153,33 +138,101 @@ fun HomeContent(navController: NavController) {
     }
 }
 
-@Composable
-fun TitleSection(modifier: Modifier = Modifier, label: String) {
-    Surface(modifier.padding(start = 4.dp, top = 2.dp)) {
-        Column {
-            Text(text = label,
-            fontSize = 20.sp,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.Left)
-        }
-    }
-}
+
 
 @Composable
 fun ReadingBookRightNow(books: List<MBook>, navController: NavController) {
 
 }
 
+@Preview
 @Composable
-fun FABContent(onTap: () -> Unit) {
-    FloatingActionButton(onClick = {onTap()},
-        shape = RoundedCornerShape(50.dp),
-        containerColor = Color(0xFF92CBDF)) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add a Book",
-                tint = Color.White
+fun ListCard(book: MBook = MBook("asd","running","me", "hello world"),
+onPressDetails: (String) -> Unit = {}) {
+
+    val context = LocalContext.current
+
+    val resources = context.resources
+
+    val displayMetrics = resources.displayMetrics
+
+    val screenWidth = displayMetrics.widthPixels / displayMetrics.density
+
+    val spacing = 10.dp
+
+
+    Card(
+        shape = RoundedCornerShape(30.dp),
+        modifier = Modifier
+            .padding(15.dp)
+            .height(250.dp)
+            .width(200.dp)
+            .clickable {
+                onPressDetails.invoke(book.title.toString())
+            }) {
+
+        Column(modifier = Modifier.width(screenWidth.dp - (spacing * 2)),
+        horizontalAlignment = Alignment.Start) {
+
+            Row(horizontalArrangement = Arrangement.Center) {
+
+                Image(painter = rememberImagePainter(data = ""), contentDescription = "book image",
+                modifier = Modifier
+                    .height(140.dp)
+                    .width(100.dp)
+                    .padding(5.dp))
+
+                Column(modifier = Modifier.padding(25.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center) {
+
+                    Icon(
+                        imageVector = Icons.Default.FavoriteBorder,
+                        tint = Color.Black,
+                        contentDescription = "Fav Icon",
+                        modifier = Modifier.padding(bottom = 2.dp)
+                    )
+
+                    BookRating(score = 4.5)
+
+                }
+
+            }
+            Text(
+                text = "Book Title",
+                modifier = Modifier.padding(5.dp),
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
+            Text(text = "Authors: All...",
+                modifier = Modifier.padding(5.dp),
+                fontSize = 15.sp)
+
+
+        }
+
     }
 
 }
+
+@Composable
+fun BookRating(score: Double = 4.5) {
+        Surface(modifier = Modifier
+            .height(70.dp)
+            .padding(5.dp),
+        shape = RoundedCornerShape(55.dp),
+            shadowElevation = 5.dp,
+            color = Color.White) {
+
+            Column(modifier = Modifier.padding(5.dp)) {
+                Icon(imageVector = Icons.Default.StarBorder, contentDescription = "Star",
+                modifier = Modifier.padding(2.dp))
+                Text(text = score.toString(), fontSize = 15.sp)
+            }
+
+        }
+
+}
+
+
