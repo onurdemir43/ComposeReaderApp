@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -88,16 +89,7 @@ fun Home(navController: NavController) {
 
             }
         })
-
-
-
-
-
-
-
-
-
-
+    
 }
 
 
@@ -176,7 +168,8 @@ onPressDetails: (String) -> Unit = {}) {
 
             Row(horizontalArrangement = Arrangement.Center) {
 
-                Image(painter = rememberImagePainter(data = ""), contentDescription = "book image",
+                Image(painter = rememberImagePainter(data = "http://books.google.com/books/content?id=73RpCQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"),
+                    contentDescription = "book image",
                 modifier = Modifier
                     .height(140.dp)
                     .width(100.dp)
@@ -195,26 +188,30 @@ onPressDetails: (String) -> Unit = {}) {
 
                     BookRating(score = 4.5)
 
+
                 }
-
             }
-            Text(
-                text = "Book Title",
-                modifier = Modifier.padding(5.dp),
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(text = "Authors: All...",
-                modifier = Modifier.padding(5.dp),
-                fontSize = 15.sp)
+
+                    Text(
+                        text = "Book Title",
+                        modifier = Modifier.padding(5.dp),
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(text = "Authors: All...",
+                        modifier = Modifier.padding(5.dp),
+                        fontSize = 15.sp)
 
 
+                RoundedButton(label = "Reading", radius = 70)
+            }
         }
-
     }
 
-}
+
+
+
 
 @Composable
 fun BookRating(score: Double = 4.5) {
@@ -232,6 +229,32 @@ fun BookRating(score: Double = 4.5) {
             }
 
         }
+
+}
+
+@Composable
+fun RoundedButton(
+    label: String,
+    radius: Int = 30,
+    onPress: () -> Unit = {}) {
+    
+    Surface(
+        modifier = Modifier.clip(
+            RoundedCornerShape(
+                bottomStartPercent = radius,
+                topEndPercent = radius)),
+        color = Color(0xFF92CBDF)) {
+            
+        Column(verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .width(90.dp)
+                    .heightIn(40.dp)
+                    .clickable { onPress.invoke() }) {
+                Text(text = label, color = Color.White, fontSize = 15.sp)
+        }
+        
+    }
 
 }
 
