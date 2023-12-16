@@ -1,18 +1,26 @@
 package com.onurdemir.composereaderapp.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LibraryBooks
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -30,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -38,10 +47,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.google.firebase.auth.FirebaseAuth
+import com.onurdemir.composereaderapp.model.MBook
 import com.onurdemir.composereaderapp.navigation.ReaderScreens
 
 @Composable
@@ -148,6 +160,96 @@ fun PasswordVisibility(passwordVisibility: MutableState<Boolean>) {
 }
 
 @Composable
+fun BookRating(score: Double = 4.5) {
+    Surface(modifier = Modifier
+        .height(70.dp)
+        .padding(5.dp),
+        shape = RoundedCornerShape(55.dp),
+        shadowElevation = 5.dp,
+        color = Color.White) {
+
+        Column(modifier = Modifier.padding(5.dp)) {
+            Icon(imageVector = Icons.Default.StarBorder, contentDescription = "Star",
+                modifier = Modifier.padding(2.dp))
+            Text(text = score.toString(), fontSize = 15.sp)
+        }
+
+    }
+
+}
+
+@Composable
+fun ListCard(book: MBook = MBook("asd","running","me", "hello world"),
+             onPressDetails: (String) -> Unit = {}) {
+
+    val context = LocalContext.current
+
+    val resources = context.resources
+
+    val displayMetrics = resources.displayMetrics
+
+    val screenWidth = displayMetrics.widthPixels / displayMetrics.density
+
+    val spacing = 10.dp
+
+
+    Card(
+        shape = RoundedCornerShape(30.dp),
+        modifier = Modifier
+            .padding(15.dp)
+            .height(250.dp)
+            .width(200.dp)
+            .clickable {
+                onPressDetails.invoke(book.title.toString())
+            }) {
+
+        Column(modifier = Modifier.width(screenWidth.dp - (spacing * 2)),
+            horizontalAlignment = Alignment.Start) {
+
+            Row(horizontalArrangement = Arrangement.Center) {
+
+                Image(painter = rememberImagePainter(data = "http://books.google.com/books/content?id=73RpCQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"),
+                    contentDescription = "book image",
+                    modifier = Modifier
+                        .height(140.dp)
+                        .width(100.dp)
+                        .padding(5.dp))
+
+                Column(modifier = Modifier.padding(25.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center) {
+
+                    Icon(
+                        imageVector = Icons.Default.FavoriteBorder,
+                        tint = Color.Black,
+                        contentDescription = "Fav Icon",
+                        modifier = Modifier.padding(bottom = 2.dp)
+                    )
+
+                    BookRating(score = 4.5)
+
+
+                }
+            }
+
+            Text(
+                text = book.title.toString(),
+                modifier = Modifier.padding(5.dp),
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(text = book.authors.toString(),
+                modifier = Modifier.padding(5.dp),
+                fontSize = 15.sp)
+
+
+            RoundedButton(label = "Reading", radius = 70)
+        }
+    }
+}
+
+@Composable
 fun TitleSection(modifier: Modifier = Modifier, label: String) {
     Surface(modifier.padding(start = 4.dp, top = 2.dp)) {
         Column {
@@ -157,6 +259,32 @@ fun TitleSection(modifier: Modifier = Modifier, label: String) {
                 textAlign = TextAlign.Left)
         }
     }
+}
+
+@Composable
+fun RoundedButton(
+    label: String,
+    radius: Int = 30,
+    onPress: () -> Unit = {}) {
+
+    Surface(
+        modifier = Modifier.clip(
+            RoundedCornerShape(
+                bottomStartPercent = radius,
+                topEndPercent = radius)),
+        color = Color(0xFF92CBDF)) {
+
+        Column(verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .width(90.dp)
+                .heightIn(40.dp)
+                .clickable { onPress.invoke() }) {
+            Text(text = label, color = Color.White, fontSize = 15.sp)
+        }
+
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
