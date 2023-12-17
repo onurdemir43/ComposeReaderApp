@@ -3,8 +3,10 @@ package com.onurdemir.composereaderapp.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -38,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -291,8 +294,10 @@ fun RoundedButton(
 @Composable
 fun ReaderAppBar(
     title: String,
+    icon: ImageVector? = null,
     showProfile: Boolean = true,
-    navController: NavController
+    navController: NavController,
+    onBackArrowClicked: () -> Unit = {}
 ) {
 
     TopAppBar(title = {
@@ -308,6 +313,13 @@ fun ReaderAppBar(
 
                 )
             }
+
+            if (icon != null) {
+                Icon(imageVector = icon, contentDescription = "Arrow Back",
+                tint = Color.Red.copy(alpha = 0.7f),
+                modifier = Modifier.clickable { onBackArrowClicked.invoke() })
+            }
+            Spacer(modifier = Modifier.width(20.dp))
             Text(text = title, color = Color.Red.copy(alpha = 0.6f),
                 style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)
             )
@@ -319,9 +331,21 @@ fun ReaderAppBar(
                     navController.navigate(ReaderScreens.LoginScreen.name)
                 }
             }) {
-                Icon(imageVector = Icons.Default.Logout,
-                    contentDescription = "Logout",
-                    tint = Color(0xFF92CBDF).copy(alpha = 0.6f))
+                if (showProfile) Row {
+                    Icon(imageVector = Icons.Default.Logout,
+                        contentDescription = "Logout",
+                        tint = Color(0xFF92CBDF).copy(alpha = 0.6f))
+                }else Box {
+
+                }
+
+
+
+
+
+
+
+
 
             }
         },
