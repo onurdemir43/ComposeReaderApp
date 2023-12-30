@@ -82,7 +82,9 @@ fun Home(navController: NavController) {
         },
             floatingActionButton = {
 
-                FABContent{}
+                FABContent{
+                    navController.navigate(ReaderScreens.SearchScreen.name)
+                }
 
             },
         content = {
