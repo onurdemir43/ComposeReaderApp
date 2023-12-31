@@ -105,8 +105,8 @@ fun HomeContent(navController: NavController) {
     val listOfBooks = listOf(
                 MBook(id = "asd", title = "hello again", authors = "all of us", notes = null),
                 MBook(id = "asd", title = "hello", authors = "all of us", notes = null),
-    MBook(id = "asd", title = "hello world", authors = "all of us", notes = null),
-    MBook(id = "asd", title = "hello android", authors = "all of us", notes = null)
+                MBook(id = "asd", title = "hello world", authors = "all of us", notes = null),
+                MBook(id = "asd", title = "hello android", authors = "all of us", notes = null)
 
     )
 
