@@ -1,0 +1,6 @@
+package com.onurdemir.composereaderapp.model
+
+data class Pdf(
+    val acsTokenLink: String,
+    val isAvailable: Boolean
+)
