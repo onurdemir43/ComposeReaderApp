@@ -1,6 +1,7 @@
 package com.onurdemir.composereaderapp.di
 
 import com.onurdemir.composereaderapp.network.BooksApi
+import com.onurdemir.composereaderapp.repository.BookRepository
 import com.onurdemir.composereaderapp.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -14,6 +15,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideBookRepository(api: BooksApi) = BookRepository(api)
 
     @Singleton
     @Provides

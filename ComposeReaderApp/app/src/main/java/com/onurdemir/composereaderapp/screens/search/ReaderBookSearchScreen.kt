@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.onurdemir.composereaderapp.components.InputField
@@ -45,11 +46,10 @@ import com.onurdemir.composereaderapp.components.ReaderAppBar
 import com.onurdemir.composereaderapp.model.MBook
 import com.onurdemir.composereaderapp.navigation.ReaderScreens
 
-@Preview
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(navController: NavController = NavController(LocalContext.current)) {
+fun SearchScreen(navController: NavController, viewModel: BookSearchViewModel = hiltViewModel()) {
     
     Scaffold(topBar = {
         ReaderAppBar(title = "Search Books",
@@ -64,8 +64,10 @@ fun SearchScreen(navController: NavController = NavController(LocalContext.curre
                 SearchForm(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)) {
-                    Log.d("TAG", "SearchScreen: $it")
+                        .padding(10.dp),
+                            viewModel) {query ->
+                        viewModel.searchBooks(query)
+
                 }
                 Spacer(modifier = Modifier.height(15.dp))
                 BookList(navController)
@@ -112,7 +114,9 @@ fun BookRow(book: MBook,
             val imageUrl = "http://books.google.com/books/content?id=73RpCQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
             Image(painter = rememberImagePainter(data = imageUrl),
                 contentDescription = "book image",
-            modifier = Modifier.width(80.dp).padding(end = 5.dp))
+            modifier = Modifier
+                .width(80.dp)
+                .padding(end = 5.dp))
 
             Column {
                 Text(text = book.title.toString(), overflow = TextOverflow.Ellipsis)
@@ -128,6 +132,7 @@ fun BookRow(book: MBook,
 @Composable
 fun SearchForm(
     modifier: Modifier = Modifier,
+    viewModel: BookSearchViewModel,
     loading: Boolean = false,
     hint: String = "Search",
     onSearch: (String) -> Unit = {}) {
