@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardElevation
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -70,7 +71,7 @@ fun SearchScreen(navController: NavController, viewModel: BookSearchViewModel = 
 
                 }
                 Spacer(modifier = Modifier.height(15.dp))
-                BookList(navController)
+                BookList(navController, viewModel)
             }
         }
     }
@@ -78,7 +79,17 @@ fun SearchScreen(navController: NavController, viewModel: BookSearchViewModel = 
 }
 
 @Composable
-fun BookList(navController: NavController) {
+fun BookList(navController: NavController, viewModel: BookSearchViewModel) {
+
+    if (viewModel.listOfBooks.value.loading == true) {
+        Log.d("BOO", "BookList: loading...")
+        CircularProgressIndicator()
+    }else {
+        Log.d("BOO", "BookList: ${viewModel.listOfBooks.value.data}")
+
+    }
+
+    Log.d("TAG", "BookList: ${viewModel.listOfBooks.value.data}")
 
     val listOfBooks = listOf(
         MBook(id = "asd", title = "hello again", authors = "all of us", notes = null),

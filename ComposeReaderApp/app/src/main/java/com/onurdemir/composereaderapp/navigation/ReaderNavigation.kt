@@ -1,6 +1,7 @@
 package com.onurdemir.composereaderapp.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -8,6 +9,7 @@ import com.onurdemir.composereaderapp.screens.ReaderSplashScreen
 import com.onurdemir.composereaderapp.screens.details.BookDetailsScreen
 import com.onurdemir.composereaderapp.screens.home.Home
 import com.onurdemir.composereaderapp.screens.login.ReaderLoginScreen
+import com.onurdemir.composereaderapp.screens.search.BookSearchViewModel
 import com.onurdemir.composereaderapp.screens.search.SearchScreen
 import com.onurdemir.composereaderapp.screens.stats.ReaderStatsScreen
 import com.onurdemir.composereaderapp.screens.update.BookUpdateScreen
@@ -27,7 +29,8 @@ fun ReaderNavigation() {
         }
 
         composable(ReaderScreens.SearchScreen.name) {
-            SearchScreen(navController = navController)
+            val viewModel = hiltViewModel<BookSearchViewModel>()
+            SearchScreen(navController = navController, viewModel)
         }
 
         composable(ReaderScreens.DetailScreen.name) {
